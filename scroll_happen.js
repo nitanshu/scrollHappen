@@ -1,100 +1,162 @@
 (function ($) {
-console.log(this);
-    $.fn.scrollhappen = function (options) {
-        var opts = $.extend({}, $.fn.scrollhappen.defaults, options);
-        var initial_elements = opts.initial_elements_to_load;
-        var counter = opts.initial_elements_to_load / opts.elements_to_fetch;
-        var scroll_counter = opts.scroll_counter;
-        var load_more = false;
-        detectScrollBarAndLoadElements(opts, counter, initial_elements, this, scroll_counter, load_more);
-    };
 
-    function detectScrollBarAndLoadElements(opts, counter, initial_elements, current_object, scroll_counter, load_more, current_counter) {
-        if (!checkScrollBarOnBrowser() && check_remaining_sheets(opts.total_no_of_elements, countChildElements(current_object))) {
-            fillElementUntilScrollBarIsVisible(opts, counter, initial_elements, current_object, scroll_counter, load_more);
-        } else {
-            if (check_remaining_sheets(opts.total_no_of_elements, countChildElements(current_object))) {
-                load_sheets_on_scroll_to_bottom(opts.total_no_of_elements, current_object, scroll_counter, opts, current_counter, load_more, counter);
+    'use strict';
+
+    // Defining scrollHappen namespace and default settings
+    $.scrollHappen = {
+        defaults: {
+            elementsToLoadInitially: 8,
+            elementSet: 4,
+            scrollCycle: 3,
+            loadingHtml: '<small>loading...</small>',
+            ajaxSettings: {
+                async: false,
+                global: false,
+                type: 'GET',
+                dataType: 'script'
+            },
+            loadingHtmlAttrs: {
+                class: 'loading'
+            },
+            loadRestButtonAttrs: {
+                class: 'load_rest',
+                type: 'button'
+            },
+            loadRestButton: function () {
             }
         }
-    }
+    };
 
-    function countChildElements(obj) {
-        return obj.children().size();
-    }
+    // Constructor for scrollHappen
+    var scrollHappen = function (element, options) {
 
-    function check_remaining_sheets(total_sheets, elements_in_dom) {
-        return total_sheets > elements_in_dom;
-    }
+        // Extending the default settings and defining private variables and methods
+        var settings = $.extend(true, {}, $.scrollHappen.defaults, options),
+            initial_elements = settings.elementsToLoadInitially,
+            offset_counter = settings.elementsToLoadInitially / settings.elementSet,
+            scroll_cycle = settings.scrollCycle,
+            current_object = element,
+            total_elements = settings.total_elements,
 
-    function checkScrollBarOnBrowser() {
-        var hasScrollbar;
-        if (typeof window.innerWidth === 'number') {
-            hasScrollbar = window.innerWidth > document.documentElement.clientWidth;
-        }
-        hasScrollbar = hasScrollbar || document.documentElement.scrollHeight > document.documentElement.clientHeight;
-        return hasScrollbar;
-    }
-
-    function fillElementUntilScrollBarIsVisible(opts, counter, initial_elements, current_object, scroll_counter, load_more) {
-        load_more = true;
-        var multi = counter * opts.elements_to_fetch;
-        $.ajax({
-            type: 'GET',
-            dataType: 'script',
-            url: opts.url,
-            data: {elements_to_fetch: opts.elements_to_fetch, offset: multi, initial_elements: initial_elements}
-        }).done(function () {
-            counter++;
-            detectScrollBarAndLoadElements(opts, counter, initial_elements, current_object, scroll_counter, load_more, counter);
-        });
-    }
-
-    function load_sheets_on_scroll_to_bottom(total_sheets, current_object, scroll_counter, opts, current_counter,load_more, counter) {
-        var scroll_bar_counter = 0;
-        if (check_remaining_sheets(total_sheets, countChildElements(current_object))) { //checks if total sheets in db is greater than the sheets in DOM
-            $(window).scroll(function (e) {
-                if (scroll_bar_counter < scroll_counter) {
-                    if (($(window).scrollTop() + $(window).height()) > ($(document).height() - 2)) {
-                        console.log('++++++++++++++++++++++++++',scroll_counter, load_more)
-                        if (load_more){
-                            scroll_bar_counter++;
-                            var element_offset = current_counter*opts.elements_to_fetch
-                            $.ajax({
-                                type: 'GET',
-                                dataType: 'script',
-                                url: opts.url,
-                                data: {elements_to_fetch: opts.elements_to_fetch, offset: element_offset}
-                            }).done(function(){
-                                current_counter++;
-                            });
-                        }
-                        else {
-                            var offset_counter = counter*opts.elements_to_fetch;
-                            counter++;
-                            $.ajax({
-                                type: 'GET',
-                                dataType: 'script',
-                                url: opts.url,
-                                data: {elements_to_fetch: opts.elements_to_fetch, offset: offset_counter},
-                                success: (function(){
-                                    scroll_bar_counter++;
-                                })
-                            });
-                        }
-                        console.log(' i touched the bottom');
-                    }
+        // Detecting scroll bar on the browser and load elements
+            detectScrollBarAndLoadElements = function (offset_counter) {
+                if (!detectScrollBarOnBrowser() && checkRemainingElements()) {
+                    fillElementUntilScrollBarIsVisible(offset_counter);
                 } else {
-                    $(window).unbind('scroll');
-                    setTimeout(function () {
-                        if (check_remaining_sheets(total_sheets, countChildElements(current_object))) {
-                            console.log(' i append the bottom', $(current_object), current_object);
-                            $(current_object).append('<a class="btn btn-default btn-lg pull-right load_all_content" href="javascript:void(0)">Load all sheets</a>')
-                        }
-                    }, 500);
+                    if (checkRemainingElements()) {
+                        loadElementsOnScrollToBottom(scroll_cycle, offset_counter);
+                    }
                 }
-            });
-        }
-    }
+            },
 
+        // Content showing while ajax is loading
+            waitingContent = function () {
+                var src = $(settings.loadingHtml).filter('img').attr('src');
+                if (src) {
+                    var image = new Image();
+                    image.src = src;
+                }
+                $('<div class="scroll_happen_loading">' + settings.loadingHtml + '</div>').attr(settings.loadingHtmlAttrs).appendTo(current_object);
+            },
+
+        // Counting total no. of child elements
+            countChildElements = function () {
+                return current_object.children().size();
+            },
+
+        // Checking if there is remaining elements
+            checkRemainingElements = function () {
+                return (total_elements > countChildElements());
+            },
+
+        // Detecting scroll bar on the browser
+            detectScrollBarOnBrowser = function () {
+                var hasScrollbar;
+                if (typeof window.innerWidth === 'number') {
+                    hasScrollbar = window.innerWidth > document.documentElement.clientWidth;
+                }
+                hasScrollbar = hasScrollbar || document.documentElement.scrollHeight > document.documentElement.clientHeight;
+                return hasScrollbar;
+            },
+
+        // Filling elements until scroll bar is visible
+            fillElementUntilScrollBarIsVisible = function (offset_counter) {
+                var multi = offset_counter * settings.elementSet;
+                $.ajax({
+                    global: settings.ajaxSettings.global,
+                    dataType: settings.ajaxSettings.dataType,
+                    url: settings.url,
+                    data: {elementSet: settings.elementSet, offset: multi, initial_elements: initial_elements}
+                }).done(function () {
+                    offset_counter++;
+                    detectScrollBarAndLoadElements(offset_counter);
+                });
+            },
+
+        // Binding scroll event when it hits the bottom it loads the elements
+            bindScrollHitToBottomEvent = function (scroll_cycle, offset_counter, scroll_cycle_counter, element_offset) {
+                if (scroll_cycle_counter < scroll_cycle && checkRemainingElements()) {
+                    $(window).scroll(function () {
+                        if (detectScrollHitToBottom()) {
+                            var element_offset = offset_counter * settings.elementSet;
+                            $.ajax({
+                                global: settings.ajaxSettings.global,
+                                dataType: settings.ajaxSettings.dataType,
+                                url: settings.url,
+                                data: {elementSet: settings.elementSet, offset: element_offset},
+                                beforeSend: function () {
+                                    waitingContent();
+                                    $(window).unbind("scroll")
+                                },
+                                complete: function () {
+                                    scroll_cycle_counter++;
+                                    offset_counter++;
+                                    $(window).bind("scroll", bindScrollHitToBottomEvent(scroll_cycle, offset_counter, scroll_cycle_counter, element_offset));
+                                    $('.' + settings.loadingHtmlAttrs.class + '').remove();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    unbindScrollAndAppendLoadRestButton((element_offset + settings.elementSet), (total_elements - element_offset));
+                }
+            },
+
+        // Detecting if the scroll bar is hitting to the bottom
+            detectScrollHitToBottom = function () {
+                return ($(window).scrollTop() + $(window).height()) > ($(document).height() - 2);
+            },
+
+        // Unbinding the scroll bar and appending the load rest button which can be use for loading rest of the element on one click
+            unbindScrollAndAppendLoadRestButton = function (offset, limit) {
+                $(window).unbind('scroll');
+                if (checkRemainingElements()) {
+                    $("<button>Load Rest</button>").attr(settings.loadRestButtonAttrs).appendTo($(current_object));
+                    $('.' + settings.loadRestButtonAttrs.class + '').click(function (e) {
+                        if (settings.loadRestButton !== undefined) {
+                            settings.loadRestButton(offset, limit);
+                            $('.' + settings.loadRestButtonAttrs.class + '').remove();
+                        }
+                    });
+                }
+            },
+
+        // Loading elements on scroll touching to bottom
+            loadElementsOnScrollToBottom = function (scroll_cycle, offset_counter) {
+                var scroll_cycle_counter = 0;
+                bindScrollHitToBottomEvent(scroll_cycle, offset_counter, scroll_cycle_counter);
+            };
+
+        // Initiating the functionality through one function
+        detectScrollBarAndLoadElements(offset_counter);
+    };
+
+    // Defining the scroll happen js
+    $.fn.scrollHappen = function (options) {
+        return this.each(function () {
+            var _this = $(this),
+            // Instantiate scrollHappen on this element if it hasn't been already
+                scroll_happen = new scrollHappen(_this, options);
+        });
+    };
 }(jQuery));
