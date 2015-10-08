@@ -25,9 +25,53 @@
 <p>scrollHappen jQuery plugin basically meant for the developers who want to load content while scroll bar touch to bottom and fill the canvas while there is no scroll bar in the page. It has several limitation and also have lots of advantages. As I have provided a button (Load Rest)at the end of the scroll Cycle which enable the user to load the rest of the element on clicking that button. As Other plug-ins provide infinite scrolling feature I do so because it's important for one who don't want any kind of limitation on scrolling and loading the elements on scroll touch to the bottom.</p>
 
 <h3>
-<a id="environments-on-which-its-been-tested" class="anchor" href="#environments-on-which-its-been-tested" aria-hidden="true"><span class="octicon octicon-link"></span></a>Environments on which it's been Tested</h3>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h3>
 
 <p>This plug-in is been tested on all browser (Mozilla, Chrome, IE &gt; 8, Safari) and it works perfectly in all browser's and also on each zoom level of each browser.</p>
+
+<h3>
+<a id="plugin-defaultsoptional" class="anchor" href="#plugin-defaultsoptional" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plugin defaults(optional)</h3>
+
+<p>These defaults are already mentioned within plug-in so if you won't mention it while defining it on your page then it would behave default.</p>
+
+<pre><code>defaults: {
+            infiniteScroll: false, 
+            initialLimit: 4,
+            limit: 4,
+            cycle: 3,
+            ajaxSettings: {
+                async: false,
+                global: false,
+                type: 'GET',
+                dataType: 'script'
+            },
+            loadingHtmlAttrs: {
+                content: '&lt;small&gt;loading...&lt;/small&gt;',
+                class: 'loading'
+            },
+            loadRestCallbackAttrs: {
+                content: '&lt;button&gt;Load Rest&lt;/button&gt;',
+                class: 'load_rest'
+            },
+            loadRestCallback: function () {
+            }
+        }
+</code></pre>
+
+<blockquote>
+<p>Required options</p>
+</blockquote>
+
+<pre><code>{
+   **url**: 'url to hit for next set of element',
+   **total_elements**: 'you need to define the total no. of elements you want to iterate on',
+}
+</code></pre>
+
+<p>As you know you can change the defaults as per your requirement.</p>
+
+<h3>
+<a id="description-of-each-option" class="anchor" href="#description-of-each-option" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description of each option</h3>
 
 <h3>
 <a id="how-to" class="anchor" href="#how-to" aria-hidden="true"><span class="octicon octicon-link"></span></a>How To</h3>
