@@ -1,30 +1,37 @@
 {
-  "name": "scrollHappen",
-  "version": "0.0.1",
-  "description": "jQuery plugin for autofilling document until scroll bar is visible and fetch elementSet , the no. of times scrolling happen",
-  "main": "jquery.scrollHappen.js",
-  "scripts": {
-    "test": "grunt jshint"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nitanshu/scrollHappen.git"
-  },
-  "keywords": [
-    "scrollHappen",
-    "initialLimit",
-    "limit",
-    "offset",
-    "loadingHtmlAttrs",
-    "loadRestCallbackAttrs",
-    "ajaxSettings"
-  ],
-  "author": {
-    "name": "Nitanshu Verma",
-    "url": "https://github.com/nitanshu"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "jQuery": ">=1.4.3"
-  }
+    "name": "scrollHappen",
+    "version": "0.0.1",
+    "description": "jQuery plugin for autofilling document until scroll bar is visible and fetch elementSet , the no. of times scrolling happen or enable infiniteScroll for autofilling the     document until the end of the elements",
+    "title": "scrollHappen",
+    "main": "jquery.scrollHappen.js",
+    "scripts": {
+        "test": "grunt jshint"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nitanshu/scrollHappen.git"
+    },
+    "keywords": [
+        "scrollHappen",
+        "infiniteScroll",
+        "initialLimit",
+        "limit",
+        "offset",
+        "loadingHtmlAttrs",
+        "loadRestCallbackAttrs",
+        "ajaxSettings"
+    ],
+    "author": {
+        "name": "Nitanshu Verma",
+        "url": "https://github.com/nitanshu"
+    },
+    "licenses": [
+        {
+            "type": "GPLv2",
+            "url": "http://www.example.com/licenses/gpl.html"
+        }
+    ],
+    "dependencies": {
+        "jquery": ">=1.4.3"
+    }
 }
