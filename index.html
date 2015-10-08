@@ -63,15 +63,67 @@
 </blockquote>
 
 <pre><code>{
-   **url**: 'url to hit for next set of element',
-   **total_elements**: 'you need to define the total no. of elements you want to iterate on',
+   url: 'url to hit for next set of element',
+   total_elements: 'you need to define the total no. of elements you want to iterate on',
 }
 </code></pre>
 
 <p>As you know you can change the defaults as per your requirement.</p>
 
 <h3>
-<a id="description-of-each-option" class="anchor" href="#description-of-each-option" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description of each option</h3>
+<a id="options-description" class="anchor" href="#options-description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options description</h3>
+
+<table>
+<thead>
+<tr>
+<th>Option key</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>infiniteScroll</td>
+<td>false</td>
+<td>this option enable loading of elements while scrollbar hit to bottom until all element will load and it also will disable the <strong>Load Rest</strong> Button functionality.</td>
+</tr>
+<tr>
+<td>initialLimit</td>
+<td>4</td>
+<td>It is the limit of element the developer want to load initially.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>4</td>
+<td>It tells the plug-in how much of element will load on each scroll touch to bottom.</td>
+</tr>
+<tr>
+<td>cycle</td>
+<td>3</td>
+<td>It tells the plug-in how many times you want scrolling functionality.</td>
+</tr>
+<tr>
+<td>loadRestCallback</td>
+<td>nil</td>
+<td>It is a callback provided to load rest of the element with the help of offset and limit which is provided by the plugin.</td>
+</tr>
+<tr>
+<td>loadingHtmlAttrs</td>
+<td>content: 'loading...', class: 'loading'</td>
+<td>It is provided for showing the loading content means if scroll bar hit to bottom it takes some time for response so I am showing the loading content.</td>
+</tr>
+<tr>
+<td>loadRestCallbackAttrs</td>
+<td>content: 'Load Rest', class: 'load_rest'</td>
+<td>It is the button (which loads rest of the elements) configuration I provided it with type button and class load_rest you can change it for your likeness.</td>
+</tr>
+<tr>
+<td>ajaxSettings</td>
+<td>async: false, global: false, type: 'GET', dataType: 'script'</td>
+<td>It is provided as if developer want some different ajaxSettings for its own ajax request.</td>
+</tr>
+</tbody>
+</table>
 
 <h3>
 <a id="how-to" class="anchor" href="#how-to" aria-hidden="true"><span class="octicon octicon-link"></span></a>How To</h3>
@@ -96,7 +148,12 @@ for e.g.</p>
 <div class="highlight highlight-source-js"><pre>$(<span class="pl-s"><span class="pl-pds">'</span>.parent<span class="pl-pds">'</span></span>).scrollHappen(<span class="pl-k">function</span>(){
      url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>url to hit for next set of element<span class="pl-pds">'</span></span>,
      total_elements<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>you need to define the total no. of elements you want to iterate on<span class="pl-pds">'</span></span>,
+     initialLimit<span class="pl-k">:</span> <span class="pl-c1">4</span>,      
+     limit<span class="pl-k">:</span> <span class="pl-c1">6</span>,
+     inifiniteScroll<span class="pl-k">:</span> <span class="pl-c1">true</span>
 });</pre></div>
+
+<p>In this example I applied this plugin on the parent class now it takes the <code>initialLimit: 4</code> means it first load 4 elements after that on each scroll hit to bottom it loads 6 element and it will continue to do so because the <strong>infiniteScroll</strong> is true.</p>
 
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
