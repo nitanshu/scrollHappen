@@ -41,10 +41,12 @@
         // Detecting scroll bar on the browser and load elements
             detectScrollBarAndLoadElements = function (offset_counter) {
                 if (!isScrollBarOnBrowser() && checkRemainingElements(offset_counter)) {
+                    console.log('check scrollbar and remaining elements true')
                     fillElementUntilScrollBarIsVisible(offset_counter);
                 } else {
                     if (checkRemainingElements(offset_counter)) {
-                        loadElementsOnScrollToBottom(cycle, offset_counter);
+                        console.log('check only remaining elements true')
+                        loadElementsOnScrollToBottom(offset_counter);
                     }
                 }
             },
@@ -56,6 +58,7 @@
 
         // Checking if there is remaining elements
             checkRemainingElements = function (offset_counter) {
+                console.log(total_elements, offset_counter, settings.initialLimit + settings.limit * offset_counter)
                 return (total_elements > settings.initialLimit + settings.limit * offset_counter);
             },
 
@@ -92,13 +95,16 @@
         // Binding scroll event when it hits the bottom it loads the elements
             bindScrollHitToBottomEvent = function (offset_counter, scroll_bar_counter) {
                 if (typeof scroll_bar_counter === "number") {
+                    console.log('scroll bar is a number');
                     if (scroll_bar_counter < cycle && checkRemainingElements(offset_counter)) {
                         scrollAndLoad(offset_counter, scroll_bar_counter);
                     } else {
                         unbindScrollAndAppendLoadRestButton(offset_counter, (settings.initialLimit + settings.limit * offset_counter), (total_elements - settings.initialLimit + settings.limit * offset_counter));
                     }
                 } else {
-                    if (checkRemainingElements(offset_counter)) {
+                    console.log('check on');
+                    if (typeof scroll_bar_counter === "number" || checkRemainingElements(offset_counter)) {
+                        console.log('i on', checkRemainingElements(offset_counter));
                         scrollAndLoad(offset_counter);
                     }
                 }
@@ -148,6 +154,7 @@
 
         // Loading elements on scroll touching to bottom
             loadElementsOnScrollToBottom = function (offset_counter) {
+                console.log('inside the load bottom on scroll to bottom')
                 bindScrollHitToBottomEvent(offset_counter, 0);
             };
 
